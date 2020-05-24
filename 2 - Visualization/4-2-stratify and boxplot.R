@@ -1,0 +1,30 @@
+library(dplyr)
+library(dslabs)
+library(ggplot2)
+
+data("gapminder")
+
+#Code: Boxplot of GDP by region
+
+gapminder <- gapminder %>%
+  mutate(dollars_per_day = gdp/population/365)
+past_year <- 1970
+# p <- gapminder%>%
+#   filter(year == past_year, !is.na(gdp))%>%
+#   ggplot(aes(region, dollars_per_day))
+# 
+# p + geom_boxplot()+
+#   theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+#Code: Enhanced boxplot ordered by median income, scaled, and showing data
+p <- gapminder%>%
+  filter(year == past_year, !is.na(gdp))%>%
+  mutate(region = reorder(region, dollars_per_day, FUN = median))%>%
+  ggplot(aes(region, dollars_per_day, fill = continent))+
+  geom_boxplot()+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))+
+  xlab("")+
+  scale_y_continuous(trans = "log2")+
+  geom_point(show.legend = FALSE)
+
+p
